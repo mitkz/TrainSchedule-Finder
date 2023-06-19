@@ -2,7 +2,7 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-class TrainSchedule-FinderApp extends Application.AppBase {
+class TrainScheduleFinderApp extends Application.AppBase {
 
     function initialize() {
         AppBase.initialize();
@@ -18,11 +18,11 @@ class TrainSchedule-FinderApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as Array<Views or InputDelegates>? {
-        return [ new TrainSchedule-FinderView() ] as Array<Views or InputDelegates>;
+        return [ new TrainScheduleFinderView() ] as Array<Views or InputDelegates>;
     }
 
 }
 
-function getApp() as TrainSchedule-FinderApp {
-    return Application.getApp() as TrainSchedule-FinderApp;
+function getApp() as TrainScheduleFinderApp {
+    return Application.getApp() as TrainScheduleFinderApp;
 }

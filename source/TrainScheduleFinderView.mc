@@ -1,7 +1,7 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 
-class TrainSchedule-FinderView extends WatchUi.View {
+class TrainScheduleFinderView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
