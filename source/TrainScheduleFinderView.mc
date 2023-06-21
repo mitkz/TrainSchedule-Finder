@@ -15,7 +15,6 @@ class TrainScheduleFinderView extends WatchUi.View {
         var result = [[0,0],[0,0]];
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
-                System.println(Lang.format("$1$ : $2$", [timetable[i][0],timetable[i][1]]));
                 result[0][0] = timetable[i][0];
                 result[0][1] = timetable[i][1];
                 if (i == timetable.size()-1){
