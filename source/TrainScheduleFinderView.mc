@@ -5,14 +5,14 @@ using Toybox.Lang as Lang;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
-    private var timetable = [[514,false],[628,true],[655,false],[745,true],[815,false],[900,true],[930,false],[1015,true],[1045,false],[1130,true],[1200,false],[1245,true],[1315,false],[1400,true],[1430,false],[1515,true],[1545,false],[1630,true],[1700,false],[1745,true],[1815,false],[1900,true],[1930,false],[2015,true],[2045,false],[2130,true],[2200,false],[2245,true],[2315,false],[2400,true],[2430,false]];
+    private var timetable = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,0]];
 
     function initialize() {
         View.initialize();
     }
 
     function getTime(current_time){
-        var result = [[0,false],[0,false]];
+        var result = [[0,0],[0,0]];
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 System.println(Lang.format("$1$ : $2$", [timetable[i][0],timetable[i][1]]));
@@ -20,7 +20,7 @@ class TrainScheduleFinderView extends WatchUi.View {
                 result[0][1] = timetable[i][1];
                 if (i == timetable.size()-1){
                     result[1][0] = "";
-                    result[1][1] = false;
+                    result[1][1] = 0;
                 }else{
                     result[1][0] = timetable[i+1][0];
                     result[1][1] = timetable[i+1][1];
