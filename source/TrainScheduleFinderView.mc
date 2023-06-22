@@ -31,6 +31,19 @@ class TrainScheduleFinderView extends WatchUi.View {
     return result;
     }
 
+    function displayTime(dc as Dc, time, x, y) as Void {
+        if(time[1] == 0){
+            dc.setColor(0x000000, Graphics.COLOR_WHITE);
+        } else if (time[1] == 1) {
+            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
+        } else if (time[1] == 2) {
+            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+        } else {
+            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+        }
+        dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, time[0], Graphics.TEXT_JUSTIFY_CENTER);
+    }
+
     function drawTime(dc as Dc) as Void {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
 
@@ -47,8 +60,8 @@ class TrainScheduleFinderView extends WatchUi.View {
         var tex = Lang.format("$1$$2$", [hour,minute]);
         var hours = getTime(tex.toNumber());
 
-        dc.drawText(120, 30, Graphics.FONT_NUMBER_HOT, hours[0][0], Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(120, 100, Graphics.FONT_NUMBER_HOT, hours[1][0], Graphics.TEXT_JUSTIFY_CENTER);
+        displayTime(dc, hours[0], 120, 30);
+        displayTime(dc, hours[1], 120, 100);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, TimeStr, Graphics.TEXT_JUSTIFY_CENTER);
 
     }
