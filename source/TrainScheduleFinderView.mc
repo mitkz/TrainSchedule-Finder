@@ -12,7 +12,7 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function getTime(current_time){
-        var result = [[0,0],[0,0]];
+        var result = [["----",0],["----",0]];
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 result[0][0] = timetable[i][0];
@@ -50,6 +50,9 @@ class TrainScheduleFinderView extends WatchUi.View {
         var clockTime = Sys.getClockTime();
         var hour = clockTime.hour.format("%02d");
         var minute = clockTime.min.format("%02d");
+        if(hour.equals("00")){
+            hour = "24";
+        }
         var hour1 = hour.substring(0, 1);
         var hour2 = hour.substring(1, 2);
         var minute1 = minute.substring(0, 1);
