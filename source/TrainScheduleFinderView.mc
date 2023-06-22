@@ -5,7 +5,7 @@ using Toybox.Lang as Lang;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
-    private var timetable = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,0]];
+    private var timetable = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
 
     function initialize() {
         View.initialize();
@@ -62,6 +62,8 @@ class TrainScheduleFinderView extends WatchUi.View {
 
         displayTime(dc, hours[0], 120, 30);
         displayTime(dc, hours[1], 120, 100);
+        
+        dc.setColor(0x000000, Graphics.COLOR_WHITE);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, TimeStr, Graphics.TEXT_JUSTIFY_CENTER);
 
     }
