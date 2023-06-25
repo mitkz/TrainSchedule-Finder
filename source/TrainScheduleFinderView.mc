@@ -18,7 +18,7 @@ class TrainScheduleFinderView extends WatchUi.View {
                 result[0][0] = timetable[i][0];
                 result[0][1] = timetable[i][1];
                 if (i == timetable.size()-1){
-                    result[1][0] = "";
+                    result[1][0] = "----";
                     result[1][1] = 0;
                 }else{
                     result[1][0] = timetable[i+1][0];
