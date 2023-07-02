@@ -2,17 +2,30 @@ import Toybox.Graphics;
 import Toybox.WatchUi;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
-    private var timetable = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
+    private var weekday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
+    private var holiday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1500,1],[1530,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
 
     function initialize() {
         View.initialize();
     }
 
+    function getTimetable(weekday){
+        if (weekday == 1 || weekday == 7){
+            return holiday_table;
+        }else{
+            return weekday_table;
+        }
+    }
+
     function getTime(current_time){
         var result = [["----",0],["----",0]];
+        var Today = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        var timetable = getTimetable(Today.day_of_week);
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 result[0][0] = timetable[i][0];
