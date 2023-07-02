@@ -73,7 +73,6 @@ class TrainScheduleFinderView extends WatchUi.View {
         
         var TimeStr;
         TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
-        var tex = Lang.format("$1$$2$", [hour,minute]);
         var hours = getTime(clockTime);
 
         displayTime(dc, hours[0], 120, 30);
