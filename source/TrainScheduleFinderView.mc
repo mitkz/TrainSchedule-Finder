@@ -2,17 +2,30 @@ import Toybox.Graphics;
 import Toybox.WatchUi;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
-    private var timetable = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
+    private var weekday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
+    private var holiday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1500,1],[1530,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
 
     function initialize() {
         View.initialize();
     }
 
-    function getTime(current_time){
+    function getTimetable(weekday){
+        if (weekday == 1 || weekday == 7){
+            return holiday_table;
+        }else{
+            return weekday_table;
+        }
+    }
+
+    function getTime(clockTime){
         var result = [["----",0],["----",0]];
+        var current_time = (clockTime.hour.format("%02d") + clockTime.min.format("%02d")).toNumber();
+        var timetable = getTimetable(clockTime.day_of_week);
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 result[0][0] = timetable[i][0];
@@ -47,7 +60,7 @@ class TrainScheduleFinderView extends WatchUi.View {
     function drawTime(dc as Dc) as Void {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
 
-        var clockTime = Sys.getClockTime();
+        var clockTime = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         var hour = clockTime.hour.format("%02d");
         var minute = clockTime.min.format("%02d");
         if(hour.equals("00")){
@@ -60,8 +73,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         
         var TimeStr;
         TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
-        var tex = Lang.format("$1$$2$", [hour,minute]);
-        var hours = getTime(tex.toNumber());
+        var hours = getTime(clockTime);
 
         displayTime(dc, hours[0], 120, 30);
         displayTime(dc, hours[1], 120, 100);
