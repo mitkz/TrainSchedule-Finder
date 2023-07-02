@@ -22,10 +22,10 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
     }
 
-    function getTime(current_time){
+    function getTime(clockTime){
         var result = [["----",0],["----",0]];
-        var Today = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-        var timetable = getTimetable(Today.day_of_week);
+        var current_time = (clockTime.hour.format("%02d") + clockTime.min.format("%02d")).toNumber();
+        var timetable = getTimetable(clockTime.day_of_week);
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 result[0][0] = timetable[i][0];
@@ -60,7 +60,7 @@ class TrainScheduleFinderView extends WatchUi.View {
     function drawTime(dc as Dc) as Void {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
 
-        var clockTime = Sys.getClockTime();
+        var clockTime = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         var hour = clockTime.hour.format("%02d");
         var minute = clockTime.min.format("%02d");
         if(hour.equals("00")){
@@ -74,7 +74,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         var TimeStr;
         TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
         var tex = Lang.format("$1$$2$", [hour,minute]);
-        var hours = getTime(tex.toNumber());
+        var hours = getTime(clockTime);
 
         displayTime(dc, hours[0], 120, 30);
         displayTime(dc, hours[1], 120, 100);
