@@ -57,7 +57,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, time[0], Graphics.TEXT_JUSTIFY_CENTER);
     }
 
-    function drawTime(dc as Dc) as Void {
+    function drawWindow(dc as Dc) as Void {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
 
         var clockTime = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
@@ -75,8 +75,8 @@ class TrainScheduleFinderView extends WatchUi.View {
         TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
         var hours = getTime(clockTime);
 
-        displayTime(dc, hours[0], 120, 30);
-        displayTime(dc, hours[1], 120, 100);
+        displayTime(dc, hours[0], 120, 30); // 1st train
+        displayTime(dc, hours[1], 120, 100); // 2nd train
         
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, TimeStr, Graphics.TEXT_JUSTIFY_CENTER);
@@ -99,7 +99,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         // Draw the background
         dc.setColor (Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
         dc.fillRectangle(0, 0, 240,240);
-        drawTime(dc);
+        drawWindow(dc);
     }
 
     // Called when this View is removed from the screen. Save the
