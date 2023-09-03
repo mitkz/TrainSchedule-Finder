@@ -40,8 +40,7 @@ class TrainScheduleFinderView extends WatchUi.View {
                 break;
             }
         }
-
-    return result;
+        return result;
     }
 
     function displayTime(dc as Dc, time, x, y) as Void {
@@ -63,12 +62,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         if(hour.equals("00")){
             hour = "24";
         }
-        var hour1 = hour.substring(0, 1);
-        var hour2 = hour.substring(1, 2);
-        var minute1 = minute.substring(0, 1);
-        var minute2 = minute.substring(1, 2);
-        
-        var TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
+        var TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour.substring(0, 1), hour.substring(1, 2), minute.substring(0, 1), minute.substring(1, 2)]);
         return TimeStr;
     }
 
@@ -105,5 +99,4 @@ class TrainScheduleFinderView extends WatchUi.View {
     // memory.
     function onHide() as Void {
     }
-
 }
