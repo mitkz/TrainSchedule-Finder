@@ -8,8 +8,8 @@ using Toybox.Time.Gregorian;
 class TrainScheduleFinderView extends WatchUi.View {
 
     private var weekday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
-    private var holiday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1500,1],[1530,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
-
+    private var holiday_table = [[514,0],[628,1],[645,0],[735,1],[805,0],[900,0],[920,0],[1005,1],[1035,0],[1120,1],[1150,0],[1235,1],[1305,0],[1400,0],[1420,0],[1505,1],[1535,0],[1620,1],[1650,0],[1735,1],[1805,0],[1900,0],[1920,0],[2005,1],[2035,0],[2120,1],[2150,0],[2235,1],[2305,0],[2400,0],[2420,2]];
+    
     function initialize() {
         View.initialize();
     }
@@ -57,12 +57,9 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, time[0], Graphics.TEXT_JUSTIFY_CENTER);
     }
 
-    function drawWindow(dc as Dc) as Void {
-        dc.setColor(0x000000, Graphics.COLOR_WHITE);
-
-        var clockTime = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-        var hour = clockTime.hour.format("%02d");
-        var minute = clockTime.min.format("%02d");
+    function getTimeStr(current_time){
+        var hour = current_time.hour.format("%02d");
+        var minute = current_time.min.format("%02d");
         if(hour.equals("00")){
             hour = "24";
         }
@@ -71,16 +68,8 @@ class TrainScheduleFinderView extends WatchUi.View {
         var minute1 = minute.substring(0, 1);
         var minute2 = minute.substring(1, 2);
         
-        var TimeStr;
-        TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
-        var hours = getTime(clockTime);
-
-        displayTime(dc, hours[0], 120, 30); // 1st train
-        displayTime(dc, hours[1], 120, 100); // 2nd train
-        
-        dc.setColor(0x000000, Graphics.COLOR_WHITE);
-        dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, TimeStr, Graphics.TEXT_JUSTIFY_CENTER);
-
+        var TimeStr = Lang.format("$1$ $2$ $3$ $4$", [hour1, hour2, minute1, minute2]);
+        return TimeStr;
     }
 
     // Load your resources here
@@ -99,7 +88,16 @@ class TrainScheduleFinderView extends WatchUi.View {
         // Draw the background
         dc.setColor (Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
         dc.fillRectangle(0, 0, 240,240);
-        drawWindow(dc);
+
+        dc.setColor(0x000000, Graphics.COLOR_WHITE);
+        var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        var departure_time = getTime(current_time);
+
+        displayTime(dc, departure_time[0], 120, 30);
+        displayTime(dc, departure_time[1], 120, 100);
+        
+        dc.setColor(0x000000, Graphics.COLOR_WHITE);
+        dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     // Called when this View is removed from the screen. Save the
