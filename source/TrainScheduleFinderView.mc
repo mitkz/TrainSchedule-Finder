@@ -85,8 +85,8 @@ class TrainScheduleFinderView extends WatchUi.View {
 
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        
         var departure_time = getDepartureTime(current_time);
-
         displayTime(dc, departure_time[0], 120, 30);
         displayTime(dc, departure_time[1], 120, 100);
         
