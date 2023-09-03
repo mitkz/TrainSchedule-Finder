@@ -22,12 +22,12 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
     }
 
-    function getTime(clockTime){
+    function getDepartureTime(current_time){
         var result = [["----",0],["----",0]];
-        var current_time = (clockTime.hour.format("%02d") + clockTime.min.format("%02d")).toNumber();
-        var timetable = getTimetable(clockTime.day_of_week);
+        var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
+        var timetable = getTimetable(current_time.day_of_week);
         for(var i = 0; i < timetable.size(); i++){
-            if (current_time < timetable[i][0]){
+            if (current_time_formatted < timetable[i][0]){
                 result[0][0] = timetable[i][0];
                 result[0][1] = timetable[i][1];
                 if (i == timetable.size()-1){
@@ -91,7 +91,7 @@ class TrainScheduleFinderView extends WatchUi.View {
 
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-        var departure_time = getTime(current_time);
+        var departure_time = getDepartureTime(current_time);
 
         displayTime(dc, departure_time[0], 120, 30);
         displayTime(dc, departure_time[1], 120, 100);
