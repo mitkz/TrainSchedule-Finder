@@ -43,7 +43,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         return result;
     }
 
-    function displayTime(dc as Dc, time, x, y) as Void {
+    function drawDepartureTime(dc as Dc, time, x, y) as Void {
         if(time[1] == 0){
             dc.setColor(0x000000, Graphics.COLOR_WHITE);
         } else if (time[1] == 1) {
@@ -87,8 +87,8 @@ class TrainScheduleFinderView extends WatchUi.View {
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
         var departure_time = getDepartureTime(current_time);
-        displayTime(dc, departure_time[0], 120, 30);
-        displayTime(dc, departure_time[1], 120, 100);
+        drawDepartureTime(dc, departure_time[0], 120, 30);
+        drawDepartureTime(dc, departure_time[1], 120, 100);
         
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
