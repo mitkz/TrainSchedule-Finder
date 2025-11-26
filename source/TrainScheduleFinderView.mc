@@ -7,18 +7,15 @@ using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
-    private var weekday_table = [[514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1],[1045,0],[1130,1],[1200,0],[1245,1],[1315,0],[1400,1],[1430,0],[1515,1],[1545,0],[1630,1],[1700,0],[1745,1],[1815,0],[1900,1],[1930,0],[2015,1],[2045,0],[2130,1],[2200,0],[2245,1],[2315,0],[2400,1],[2430,2]];
-    private var holiday_table = [[514,0],[628,1],[645,0],[735,1],[805,0],[900,0],[920,0],[1005,1],[1035,0],[1120,1],[1150,0],[1235,1],[1305,0],[1400,0],[1420,0],[1505,1],[1535,0],[1620,1],[1650,0],[1735,1],[1805,0],[1900,0],[1920,0],[2005,1],[2035,0],[2120,1],[2150,0],[2235,1],[2305,0],[2400,0],[2420,2]];
-    
     function initialize() {
         View.initialize();
     }
 
     function getTimetable(weekday){
         if (weekday == 1 || weekday == 7){
-            return holiday_table;
+            return TrainScheduleData.holiday_table;
         }else{
-            return weekday_table;
+            return TrainScheduleData.weekday_table;
         }
     }
 
