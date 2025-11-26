@@ -14,18 +14,31 @@ class TrainScheduleFinderView extends WatchUi.View {
         View.initialize();
     }
 
-    function getTimetable(weekday){
-        if (weekday == 1 || weekday == 7){
+    // Check if current day is a weekend (Sunday=1, Saturday=7)
+    function isWeekend(weekday as Number) as Boolean {
+        return (weekday == 1 || weekday == 7);
+    }
+
+    // Check if current date is a holiday or weekend
+    function isHolidayOrWeekend(clockTime as Gregorian.Info) as Boolean {
+        if (isWeekend(clockTime.day_of_week)) {
+            return true;
+        }
+        return Holidays.isHoliday(clockTime.month, clockTime.day);
+    }
+
+    function getTimetable(clockTime as Gregorian.Info) as Array {
+        if (isHolidayOrWeekend(clockTime)){
             return holiday_table;
         }else{
             return weekday_table;
         }
     }
 
-    function getTime(clockTime){
+    function getTime(clockTime as Gregorian.Info) as Array {
         var result = [["----",0],["----",0]];
         var current_time = (clockTime.hour.format("%02d") + clockTime.min.format("%02d")).toNumber();
-        var timetable = getTimetable(clockTime.day_of_week);
+        var timetable = getTimetable(clockTime);
         for(var i = 0; i < timetable.size(); i++){
             if (current_time < timetable[i][0]){
                 result[0][0] = timetable[i][0];
@@ -81,6 +94,11 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, TimeStr, Graphics.TEXT_JUSTIFY_CENTER);
 
+        // Display holiday/weekend marker
+        if (isHolidayOrWeekend(clockTime)) {
+            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+            dc.drawText(120, 165, Graphics.FONT_SYSTEM_SMALL, "Holiday", Graphics.TEXT_JUSTIFY_CENTER);
+        }
     }
 
     // Load your resources here
