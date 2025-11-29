@@ -6,16 +6,31 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
+    // false = outbound (going), true = return (coming back)
+    var isReturnTrip = false;
 
     function initialize() {
         View.initialize();
     }
 
+    function toggleDirection() {
+        isReturnTrip = !isReturnTrip;
+        WatchUi.requestUpdate();
+    }
+
     function getTimetable(weekday){
-        if (weekday == 1 || weekday == 7){
-            return TrainScheduleData.holiday_table;
-        }else{
-            return TrainScheduleData.weekday_table;
+        if (isReturnTrip) {
+            if (weekday == 1 || weekday == 7){
+                return TrainScheduleData.holiday_return_table;
+            }else{
+                return TrainScheduleData.weekday_return_table;
+            }
+        } else {
+            if (weekday == 1 || weekday == 7){
+                return TrainScheduleData.holiday_table;
+            }else{
+                return TrainScheduleData.weekday_table;
+            }
         }
     }
 
@@ -83,6 +98,11 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
+        // Draw direction indicator (arrow showing direction)
+        var directionLabel = isReturnTrip ? "<< RET" : "OUT >>";
+        dc.setColor(Graphics.COLOR_DK_BLUE, Graphics.COLOR_WHITE);
+        dc.drawText(120, 5, Graphics.FONT_XTINY, directionLabel, Graphics.TEXT_JUSTIFY_CENTER);
+
         var departure_time = getDepartureTime(current_time);
         drawDepartureTime(dc, departure_time[0], 120, 30);
         drawDepartureTime(dc, departure_time[1], 120, 100);

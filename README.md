@@ -19,7 +19,21 @@ Example:
 Please get time schedule from your favorite train company and convert it to the above format.
 Edit the `weekday_table` and `holiday_table` variables in `source/TrainScheduleData.mc` to set your train schedule.
 
+### Outbound and Return Trip Schedules
+
+The app supports both outbound (going to destination) and return (coming back home) schedules. You can define four timetables:
+
+- `weekday_table` - Outbound weekday schedule
+- `holiday_table` - Outbound holiday/weekend schedule
+- `weekday_return_table` - Return weekday schedule
+- `holiday_return_table` - Return holiday/weekend schedule
+
+**Swipe left or right** on the watch to toggle between outbound and return schedules. The current direction is displayed at the top of the screen:
+- `OUT >>` - Showing outbound schedule
+- `<< RET` - Showing return schedule
+
 ## FAQ  
 
 Q: Why don't you get data from the internet?  
 A: Watch and phone are frequently disconected. I think it isn't reasonable to get data from the internet everytime. (Train schedule is not changed frequently.) 
+
