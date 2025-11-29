@@ -19,18 +19,11 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function getTimetable(weekday){
+        var isHoliday = (weekday == 1 || weekday == 7);
         if (isReturnTrip) {
-            if (weekday == 1 || weekday == 7){
-                return TrainScheduleData.holiday_return_table;
-            }else{
-                return TrainScheduleData.weekday_return_table;
-            }
+            return isHoliday ? TrainScheduleData.holiday_return_table : TrainScheduleData.weekday_return_table;
         } else {
-            if (weekday == 1 || weekday == 7){
-                return TrainScheduleData.holiday_table;
-            }else{
-                return TrainScheduleData.weekday_table;
-            }
+            return isHoliday ? TrainScheduleData.holiday_table : TrainScheduleData.weekday_table;
         }
     }
 
