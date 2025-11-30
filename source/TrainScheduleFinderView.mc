@@ -98,7 +98,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
         // Draw direction indicator (arrow showing direction)
-        var directionLabel = isReturnTrip ? "<<<" : ">>>";
+        var directionLabel = isReturnTrip ? "< < <" : "> > >";
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
         dc.drawText(120, 165, Graphics.FONT_SYSTEM_TINY, directionLabel, Graphics.TEXT_JUSTIFY_CENTER);
 
