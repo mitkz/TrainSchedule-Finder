@@ -14,16 +14,4 @@ class TrainScheduleFinderDelegate extends WatchUi.BehaviorDelegate {
         WatchUi.requestUpdate();
         return true;
     }
-
-    function onNextPage() {
-        mView.nextSchedule();
-        WatchUi.requestUpdate();
-        return true;
-    }
-
-    function onPreviousPage() {
-        mView.previousSchedule();
-        WatchUi.requestUpdate();
-        return true;
-    }
 }
