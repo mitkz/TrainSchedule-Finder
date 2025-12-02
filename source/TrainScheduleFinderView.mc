@@ -16,11 +16,11 @@ class TrainScheduleFinderView extends WatchUi.View {
 
     // Get the current schedule from the schedules array
     function getCurrentSchedule() {
-        var schedules = TrainScheduleData.schedules;
+        var schedules = TrainScheduleData.schedules as Lang.Array;
         if (schedules.size() == 0) {
             return null;
         }
-        return schedules[_currentScheduleIndex];
+        return schedules[_currentScheduleIndex] as Lang.Dictionary;
     }
 
     // Get the title of the current schedule
@@ -29,7 +29,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         if (schedule == null) {
             return "No Schedule";
         }
-        return schedule["title"];
+        return schedule["title"] as Lang.String;
     }
 
     // Cycle to the next schedule
@@ -62,7 +62,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         var isHoliday = (weekday == 1 || weekday == 7);
         
         // New data structure uses "weekday" and "holiday" keys directly
-        return isHoliday ? schedule["holiday"] : schedule["weekday"];
+        return isHoliday ? (schedule["holiday"] as Lang.Array) : (schedule["weekday"] as Lang.Array);
     }
 
     function getDepartureTime(current_time as Gregorian.Info){
@@ -136,14 +136,9 @@ class TrainScheduleFinderView extends WatchUi.View {
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
         // Draw the schedule title at the top
-        dc.setColor(0x555555, Graphics.COLOR_WHITE);
-        dc.drawText(120, 5, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
-        
-        // Draw direction indicator (arrow showing direction)
-        var directionLabel = isReturnTrip ? "< < <" : "> > >";
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-        dc.drawText(120, 165, Graphics.FONT_SYSTEM_TINY, directionLabel, Graphics.TEXT_JUSTIFY_CENTER);
-
+        dc.drawText(120, 173, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
+        
         var departure_time = getDepartureTime(current_time) as Lang.Array;
         var nextTrain = departure_time[0] as Lang.Array;
         var followingTrain = departure_time[1] as Lang.Array;
