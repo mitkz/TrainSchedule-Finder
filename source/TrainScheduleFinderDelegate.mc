@@ -10,7 +10,8 @@ class TrainScheduleFinderDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onSelect() {
-        mView.toggleDirection();
+        mView.nextSchedule();
+        WatchUi.requestUpdate();
         return true;
     }
 }

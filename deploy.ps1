@@ -1,3 +1,8 @@
+param(
+    [ValidateSet('Build','Deploy')]
+    [string]$Action = 'Deploy'
+)
+
 # copy from
 $sourceFilePath = "bin\TrainScheduleFinder.prg"
 
@@ -29,7 +34,12 @@ Write-Host "Building App..."
 java.exe -Xms1g -jar ..\..\AppData\Roaming\Garmin\ConnectIQ\Sdks\connectiq-sdk-win-4.2.4-2023-04-05-5830cc591\bin\monkeybrains.jar -o $sourceFilePath -f "monkey.jungle" -y ..\developer_key -d vivoactive3_sim -w
 if ($? -ne $true) {
     Write-Host "Build failed!"
-    exit
+    exit 1
+}
+
+if ($Action -eq 'Build') {
+    Write-Host "Build completed. Skipping deployment"
+    exit 0
 }
 
 WaitForDriveAvailability -destinationFilePath $destinationFilePath

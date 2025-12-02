@@ -8,9 +8,44 @@ using Toybox.Time.Gregorian;
 class TrainScheduleFinderView extends WatchUi.View {
     // false = outbound (going), true = return (coming back)
     var isReturnTrip = false;
+    var _currentScheduleIndex = 0;
 
     function initialize() {
         View.initialize();
+    }
+
+    // Get the current schedule from the schedules array
+    function getCurrentSchedule() {
+        var schedules = TrainScheduleData.schedules as Lang.Array;
+        if (schedules.size() == 0) {
+            return null;
+        }
+        return schedules[_currentScheduleIndex] as Lang.Dictionary;
+    }
+
+    // Get the title of the current schedule
+    function getCurrentTitle() {
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return "No Schedule";
+        }
+        return schedule["title"] as Lang.String;
+    }
+
+    // Cycle to the next schedule
+    function nextSchedule() {
+        var schedules = TrainScheduleData.schedules;
+        if (schedules.size() > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex + 1) % schedules.size();
+        }
+    }
+
+    // Cycle to the previous schedule
+    function previousSchedule() {
+        var schedules = TrainScheduleData.schedules;
+        if (schedules.size() > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex - 1 + schedules.size()) % schedules.size();
+        }
     }
 
     function toggleDirection() {
@@ -19,12 +54,15 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function getTimetable(weekday as Lang.Number){
-        var isHoliday = (weekday == 1 || weekday == 7);
-        if (isReturnTrip) {
-            return isHoliday ? TrainScheduleData.holiday_return_table : TrainScheduleData.weekday_return_table;
-        } else {
-            return isHoliday ? TrainScheduleData.holiday_table : TrainScheduleData.weekday_table;
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return [[0,0]];
         }
+        
+        var isHoliday = (weekday == 1 || weekday == 7);
+        
+        // New data structure uses "weekday" and "holiday" keys directly
+        return isHoliday ? (schedule["holiday"] as Lang.Array) : (schedule["weekday"] as Lang.Array);
     }
 
     function getDepartureTime(current_time as Gregorian.Info){
@@ -97,11 +135,10 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
-        // Draw direction indicator (arrow showing direction)
-        var directionLabel = isReturnTrip ? "< < <" : "> > >";
+        // Draw the schedule title at the top
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-        dc.drawText(120, 165, Graphics.FONT_SYSTEM_TINY, directionLabel, Graphics.TEXT_JUSTIFY_CENTER);
-
+        dc.drawText(120, 173, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
+        
         var departure_time = getDepartureTime(current_time) as Lang.Array;
         var nextTrain = departure_time[0] as Lang.Array;
         var followingTrain = departure_time[1] as Lang.Array;
