@@ -18,7 +18,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
-    function getTimetable(weekday){
+    function getTimetable(weekday as Lang.Number){
         var isHoliday = (weekday == 1 || weekday == 7);
         if (isReturnTrip) {
             return isHoliday ? TrainScheduleData.holiday_return_table : TrainScheduleData.weekday_return_table;
@@ -27,7 +27,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
     }
 
-    function getDepartureTime(current_time){
+    function getDepartureTime(current_time as Gregorian.Info){
         var result = [["----",0],["----",0]] as Lang.Array;
         var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
         var timetable = getTimetable(current_time.day_of_week) as Lang.Array;
