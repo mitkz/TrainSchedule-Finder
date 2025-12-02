@@ -7,15 +7,56 @@ using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
 
+    // Current schedule index (cycles through available schedules)
+    private var _currentScheduleIndex = 0;
+
     function initialize() {
         View.initialize();
     }
 
+    // Get the current schedule from the schedules array
+    function getCurrentSchedule() {
+        var schedules = TrainScheduleData.schedules;
+        if (schedules.size() == 0) {
+            return null;
+        }
+        return schedules[_currentScheduleIndex];
+    }
+
+    // Get the title of the current schedule
+    function getCurrentTitle() {
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return "No Schedule";
+        }
+        return schedule["title"];
+    }
+
+    // Cycle to the next schedule
+    function nextSchedule() {
+        var schedules = TrainScheduleData.schedules;
+        if (schedules.size() > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex + 1) % schedules.size();
+        }
+    }
+
+    // Cycle to the previous schedule
+    function previousSchedule() {
+        var schedules = TrainScheduleData.schedules;
+        if (schedules.size() > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex - 1 + schedules.size()) % schedules.size();
+        }
+    }
+
     function getTimetable(weekday){
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return [];
+        }
         if (weekday == 1 || weekday == 7){
-            return TrainScheduleData.holiday_table;
+            return schedule["holiday"];
         }else{
-            return TrainScheduleData.weekday_table;
+            return schedule["weekday"];
         }
     }
 
@@ -82,6 +123,10 @@ class TrainScheduleFinderView extends WatchUi.View {
 
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        
+        // Draw the schedule title at the top
+        dc.setColor(0x555555, Graphics.COLOR_WHITE);
+        dc.drawText(120, 5, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
         
         var departure_time = getDepartureTime(current_time);
         drawDepartureTime(dc, departure_time[0], 120, 30);

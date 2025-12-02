@@ -10,14 +10,52 @@ This program does not get data from the internet, it uses the data, which define
 
 ## Train Schedule Data Format
 
-Data structure is the 2 dimension list such as [[hhmm(int), traintype(int)],...].  
-By default, you can set two train type 0 and 1. 0 is for the train that stops at all stations and displayed with black color. 1 is for the train that stops at the main stations and displayed with green color.  
+The data structure uses an array of schedule objects. Each schedule contains:
+- `title`: Name/description of the timetable (displayed at the top of the widget)
+- `weekday`: Array of departure times for weekdays
+- `holiday`: Array of departure times for holidays/weekends
 
-Example:  
-[[0845,0],[0851,1],...,[2359,0]]
+Time entries use the format: `[hhmm(int), type(int)]`
+- `hhmm`: departure time in 24-hour format (e.g., 514 = 05:14, 1200 = 12:00)
+- `type`: 0 = local (black), 1 = express (green), 2 = special (red)
+
+Example:
+```
+module TrainScheduleData {
+    var schedules = [
+        {
+            "title" => "Commuting - Outbound (Home → Office)",
+            "weekday" => [
+                [514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1]
+            ],
+            "holiday" => [
+                [614,0],[738,1],[855,0]
+            ]
+        },
+        {
+            "title" => "Commuting - Inbound (Office → Home)",
+            "weekday" => [
+                [1700,0],[1745,1],[1830,0],[1900,1],[2000,0]
+            ],
+            "holiday" => [
+                [1700,0],[1800,1]
+            ]
+        },
+        {
+            "title" => "Airport Access (Central ↔ Airport)",
+            "weekday" => [
+                [500,1],[530,1],[600,1]
+            ],
+            "holiday" => [
+                [520,1],[620,1]
+            ]
+        }
+    ];
+}
+```
 
 Please get time schedule from your favorite train company and convert it to the above format.
-Edit the `weekday_table` and `holiday_table` variables in `source/TrainScheduleData.mc` to set your train schedule.
+Edit the `schedules` variable in `source/TrainScheduleData.mc` to set your train schedules.
 
 ## FAQ  
 
