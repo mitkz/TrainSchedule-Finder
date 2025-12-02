@@ -8,6 +8,7 @@ using Toybox.Time.Gregorian;
 class TrainScheduleFinderView extends WatchUi.View {
     // false = outbound (going), true = return (coming back)
     var isReturnTrip = false;
+    var _currentScheduleIndex = 0;
 
     function initialize() {
         View.initialize();
@@ -53,12 +54,15 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function getTimetable(weekday as Lang.Number){
-        var isHoliday = (weekday == 1 || weekday == 7);
-        if (isReturnTrip) {
-            return isHoliday ? TrainScheduleData.holiday_return_table : TrainScheduleData.weekday_return_table;
-        } else {
-            return isHoliday ? TrainScheduleData.holiday_table : TrainScheduleData.weekday_table;
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return [[0,0]];
         }
+        
+        var isHoliday = (weekday == 1 || weekday == 7);
+        
+        // New data structure uses "weekday" and "holiday" keys directly
+        return isHoliday ? schedule["holiday"] : schedule["weekday"];
     }
 
     function getDepartureTime(current_time as Gregorian.Info){
