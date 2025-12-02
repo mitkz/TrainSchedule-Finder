@@ -7,6 +7,10 @@
 // - type: 0 = local train (black), 1 = express train (green), 2 = special (red)
 //
 // Example: [[0845,0],[0851,1],...,[2359,0]]
+//
+// Outbound tables (weekday_table, holiday_table): Schedule from home to destination
+// Return tables (weekday_return_table, holiday_return_table): Schedule from destination to home
+// Press the select button to toggle between outbound and return schedules.
 
 module TrainScheduleData {
     var schedules = [

@@ -19,7 +19,8 @@ class TrainScheduleFinderApp extends Application.AppBase {
     // Return the initial view of your application here
     function getInitialView() as Array<Views or InputDelegates>? {
         var view = new TrainScheduleFinderView();
-        return [ view, new TrainScheduleFinderDelegate(view) ] as Array<Views or InputDelegates>;
+        var delegate = new TrainScheduleFinderDelegate(view);
+        return [ view, delegate ] as Array<Views or InputDelegates>;
     }
 
 }

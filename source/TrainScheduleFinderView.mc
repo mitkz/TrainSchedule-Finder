@@ -6,9 +6,8 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 class TrainScheduleFinderView extends WatchUi.View {
-
-    // Current schedule index (cycles through available schedules)
-    private var _currentScheduleIndex = 0;
+    // false = outbound (going), true = return (coming back)
+    var isReturnTrip = false;
 
     function initialize() {
         View.initialize();
@@ -48,32 +47,39 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
     }
 
-    function getTimetable(weekday){
-        var schedule = getCurrentSchedule();
-        if (schedule == null) {
-            return [];
-        }
-        if (weekday == 1 || weekday == 7){
-            return schedule["holiday"];
-        }else{
-            return schedule["weekday"];
+    function toggleDirection() {
+        isReturnTrip = !isReturnTrip;
+        WatchUi.requestUpdate();
+    }
+
+    function getTimetable(weekday as Lang.Number){
+        var isHoliday = (weekday == 1 || weekday == 7);
+        if (isReturnTrip) {
+            return isHoliday ? TrainScheduleData.holiday_return_table : TrainScheduleData.weekday_return_table;
+        } else {
+            return isHoliday ? TrainScheduleData.holiday_table : TrainScheduleData.weekday_table;
         }
     }
 
-    function getDepartureTime(current_time){
-        var result = [["----",0],["----",0]];
+    function getDepartureTime(current_time as Gregorian.Info){
+        var result = [["----",0],["----",0]] as Lang.Array;
         var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
-        var timetable = getTimetable(current_time.day_of_week);
+        var timetable = getTimetable(current_time.day_of_week) as Lang.Array;
         for(var i = 0; i < timetable.size(); i++){
-            if (current_time_formatted < timetable[i][0]){
-                result[0][0] = timetable[i][0];
-                result[0][1] = timetable[i][1];
+            var entry = timetable[i] as Lang.Array;
+            if (current_time_formatted < entry[0]){
+                var firstResult = result[0] as Lang.Array;
+                firstResult[0] = entry[0];
+                firstResult[1] = entry[1];
                 if (i == timetable.size()-1){
-                    result[1][0] = "----";
-                    result[1][1] = 0;
+                    var secondResult = result[1] as Lang.Array;
+                    secondResult[0] = "----";
+                    secondResult[1] = 0;
                 }else{
-                    result[1][0] = timetable[i+1][0];
-                    result[1][1] = timetable[i+1][1];
+                    var nextEntry = (timetable as Lang.Array)[i+1] as Lang.Array;
+                    var secondResult = result[1] as Lang.Array;
+                    secondResult[0] = nextEntry[0];
+                    secondResult[1] = nextEntry[1];
                 }
                 break;
             }
@@ -81,17 +87,18 @@ class TrainScheduleFinderView extends WatchUi.View {
         return result;
     }
 
-    function drawDepartureTime(dc as Dc, time, x, y) as Void {
-        if(time[1] == 0){
+    function drawDepartureTime(dc as Dc, time as Lang.Array, x as Lang.Number, y as Lang.Number) as Void {
+        var trainType = time[1] as Lang.Number;
+        if(trainType == 0){
             dc.setColor(0x000000, Graphics.COLOR_WHITE);
-        } else if (time[1] == 1) {
+        } else if (trainType == 1) {
             dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
-        } else if (time[1] == 2) {
+        } else if (trainType == 2) {
             dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
         } else {
             dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
         }
-        dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, time[0], Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(x, y, Graphics.FONT_NUMBER_HOT, time[0].toString(), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     function getTimeStr(current_time){
@@ -128,9 +135,16 @@ class TrainScheduleFinderView extends WatchUi.View {
         dc.setColor(0x555555, Graphics.COLOR_WHITE);
         dc.drawText(120, 5, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
         
-        var departure_time = getDepartureTime(current_time);
-        drawDepartureTime(dc, departure_time[0], 120, 30);
-        drawDepartureTime(dc, departure_time[1], 120, 100);
+        // Draw direction indicator (arrow showing direction)
+        var directionLabel = isReturnTrip ? "< < <" : "> > >";
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+        dc.drawText(120, 165, Graphics.FONT_SYSTEM_TINY, directionLabel, Graphics.TEXT_JUSTIFY_CENTER);
+
+        var departure_time = getDepartureTime(current_time) as Lang.Array;
+        var nextTrain = departure_time[0] as Lang.Array;
+        var followingTrain = departure_time[1] as Lang.Array;
+        drawDepartureTime(dc, nextTrain, 120, 30);
+        drawDepartureTime(dc, followingTrain, 120, 100);
         
         dc.setColor(0x000000, Graphics.COLOR_WHITE);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
