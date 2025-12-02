@@ -9,7 +9,7 @@
 //
 // Outbound tables (weekday_table, holiday_table): Schedule from home to destination
 // Return tables (weekday_return_table, holiday_return_table): Schedule from destination to home
-// Swipe left/right on the watch to toggle between outbound and return schedules.
+// Press the select button to toggle between outbound and return schedules.
 
 module TrainScheduleData {
     // Outbound schedules (home -> destination)

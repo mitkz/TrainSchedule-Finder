@@ -28,9 +28,9 @@ The app supports both outbound (going to destination) and return (coming back ho
 - `weekday_return_table` - Return weekday schedule
 - `holiday_return_table` - Return holiday/weekend schedule
 
-**Swipe left or right** on the watch to toggle between outbound and return schedules. The current direction is displayed at the top of the screen:
-- `OUT >>` - Showing outbound schedule
-- `<< RET` - Showing return schedule
+**Press the select button** on the watch to toggle between outbound and return schedules. The current direction is displayed on the screen:
+- `> > >` - Showing outbound schedule
+- `< < <` - Showing return schedule
 
 ## FAQ  
 
