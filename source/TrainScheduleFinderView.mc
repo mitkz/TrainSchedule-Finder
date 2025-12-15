@@ -66,7 +66,7 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function getDepartureTime(current_time as Gregorian.Info){
-        var result = [["----",0],["----",0]] as Lang.Array;
+        var result = [[-1,0],[-1,0]];
         var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
         var timetable = getTimetable(current_time.day_of_week) as Lang.Array;
         for(var i = 0; i < timetable.size(); i++){
@@ -77,8 +77,8 @@ class TrainScheduleFinderView extends WatchUi.View {
                 firstResult[1] = entry[1];
                 if (i == timetable.size()-1){
                     var secondResult = result[1] as Lang.Array;
-                    secondResult[0] = "----";
-                    secondResult[1] = 0;
+                    result[1][0] = -1;
+                    result[1][1] = 0;
                 }else{
                     var nextEntry = (timetable as Lang.Array)[i+1] as Lang.Array;
                     var secondResult = result[1] as Lang.Array;
@@ -92,6 +92,12 @@ class TrainScheduleFinderView extends WatchUi.View {
     }
 
     function drawDepartureTime(dc as Dc, time as Lang.Array, x as Lang.Number, y as Lang.Number) as Void {
+        var displayTime;
+        if (time[0] == -1) {
+            displayTime = "----";
+        } else {
+            displayTime = time[0];
+        }
         var trainType = time[1] as Lang.Number;
         if(trainType == 0){
             dc.setColor(0x000000, Graphics.COLOR_WHITE);
@@ -100,9 +106,17 @@ class TrainScheduleFinderView extends WatchUi.View {
         } else if (trainType == 2) {
             dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
         } else {
-            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+            if(time[1] == 0){
+                dc.setColor(0x000000, Graphics.COLOR_WHITE);
+            } else if (time[1] == 1) {
+                dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
+            } else if (time[1] == 2) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+            } else {
+                dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+            }
         }
-        dc.drawText(x, y, Graphics.FONT_NUMBER_HOT, time[0].toString(), Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, displayTime, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     function getTimeStr(current_time){
