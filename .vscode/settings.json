@@ -1,0 +1,8 @@
+{
+    "[monkeyc]": {
+        "files.encoding": "utf8"
+    },
+    "files.associations": {
+        "*.mc": "monkeyc"
+    }
+}
