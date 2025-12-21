@@ -13,45 +13,47 @@ This program does not get data from the internet, it uses offline data defined a
 
 The data structure uses an array of schedule objects. Each schedule contains:
 - `title`: Name/description of the timetable (displayed in the widget)
-- `weekday`: Array of departure times for weekdays
-- `holiday`: Array of departure times for holidays/weekends
+- `weekday_str`: String of departure times for weekdays
+- `holiday_str`: String of departure times for holidays/weekends
 
-Time entries use the format: `[hhmm(int), type(int)]`
+Time entries use the string format: `"hhmm:type,hhmm:type,..."`
 - `hhmm`: departure time in 24-hour format (e.g., 514 = 05:14, 1200 = 12:00)
 - `type`: 0 = local (black), 1 = express (green), 2 = special (red)
+- Entries are separated by commas
 
 Example:
 ```
 module TrainScheduleData {
-    var schedules = [
+    const schedules = [
         {
-            "title" => "Commuting - Outbound (Home → Office)",
-            "weekday" => [
-                [514,0],[628,1],[655,0],[745,1],[815,0],[900,1],[930,0],[1015,1]
-            ],
-            "holiday" => [
-                [614,0],[738,1],[855,0]
-            ]
+            "title" => "To Office",
+            "weekday_str" => "514:0,628:1,655:0,745:1,815:0,900:1,930:0,1015:1",
+            "holiday_str" => "614:0,738:1,855:0"
         },
         {
-            "title" => "Commuting - Inbound (Office → Home)",
-            "weekday" => [
-                [1700,0],[1745,1],[1830,0],[1900,1],[2000,0]
-            ],
-            "holiday" => [
-                [1700,0],[1800,1]
-            ]
+            "title" => "To Home",
+            "weekday_str" => "1700:0,1745:1,1830:0,1900:1,2000:0",
+            "holiday_str" => "1700:0,1800:1"
         },
         {
-            "title" => "Airport Access (Central ↔ Airport)",
-            "weekday" => [
-                [500,1],[530,1],[600,1]
-            ],
-            "holiday" => [
-                [520,1],[620,1]
-            ]
+            "title" => "Airport",
+            "weekday_str" => "500:1,530:1,600:1",
+            "holiday_str" => "520:1,620:1"
         }
     ];
+    
+    // Get raw schedule data by index
+    function getRawSchedule(idx) {
+        if (idx < 0 || idx >= schedules.size()) {
+            return null;
+        }
+        return schedules[idx];
+    }
+    
+    // Get total number of schedules
+    function getScheduleCount() {
+        return schedules.size();
+    }
 }
 ```
 
