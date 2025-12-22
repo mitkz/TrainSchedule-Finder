@@ -4,6 +4,7 @@ using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using TrainScheduleParser;
 
 class TrainScheduleFinderView extends WatchUi.View {
     // false = outbound (going), true = return (coming back)
@@ -16,35 +17,27 @@ class TrainScheduleFinderView extends WatchUi.View {
 
     // Get the current schedule from the schedules array
     function getCurrentSchedule() {
-        var schedules = TrainScheduleData.schedules as Lang.Array;
-        if (schedules.size() == 0) {
-            return null;
-        }
-        return schedules[_currentScheduleIndex] as Lang.Dictionary;
+        return TrainScheduleParser.getSchedule(_currentScheduleIndex);
     }
 
     // Get the title of the current schedule
     function getCurrentTitle() {
-        var schedule = getCurrentSchedule();
-        if (schedule == null) {
-            return "No Schedule";
-        }
-        return schedule["title"] as Lang.String;
+        return TrainScheduleParser.getScheduleTitle(_currentScheduleIndex);
     }
 
     // Cycle to the next schedule
     function nextSchedule() {
-        var schedules = TrainScheduleData.schedules;
-        if (schedules.size() > 0) {
-            _currentScheduleIndex = (_currentScheduleIndex + 1) % schedules.size();
+        var count = TrainScheduleParser.getScheduleCount();
+        if (count > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex + 1) % count;
         }
     }
 
     // Cycle to the previous schedule
     function previousSchedule() {
-        var schedules = TrainScheduleData.schedules;
-        if (schedules.size() > 0) {
-            _currentScheduleIndex = (_currentScheduleIndex - 1 + schedules.size()) % schedules.size();
+        var count = TrainScheduleParser.getScheduleCount();
+        if (count > 0) {
+            _currentScheduleIndex = (_currentScheduleIndex - 1 + count) % count;
         }
     }
 
@@ -60,38 +53,31 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
         
         var isHoliday = (weekday == 1 || weekday == 7);
+        var timetableStr = isHoliday ? schedule["holiday_str"] : schedule["weekday_str"];
         
-        // New data structure uses "weekday" and "holiday" keys directly
-        return isHoliday ? (schedule["holiday"] as Lang.Array) : (schedule["weekday"] as Lang.Array);
+        return timetableStr;
     }
 
     function getDepartureTime(current_time as Gregorian.Info){
-        var result = [["----",0],["----",0]] as Lang.Array;
-        var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
-        var timetable = getTimetable(current_time.day_of_week) as Lang.Array;
-        for(var i = 0; i < timetable.size(); i++){
-            var entry = timetable[i] as Lang.Array;
-            if (current_time_formatted < entry[0]){
-                var firstResult = result[0] as Lang.Array;
-                firstResult[0] = entry[0];
-                firstResult[1] = entry[1];
-                if (i == timetable.size()-1){
-                    var secondResult = result[1] as Lang.Array;
-                    secondResult[0] = "----";
-                    secondResult[1] = 0;
-                }else{
-                    var nextEntry = (timetable as Lang.Array)[i+1] as Lang.Array;
-                    var secondResult = result[1] as Lang.Array;
-                    secondResult[0] = nextEntry[0];
-                    secondResult[1] = nextEntry[1];
-                }
-                break;
-            }
+        var schedule = getCurrentSchedule();
+        if (schedule == null) {
+            return [[-1,0],[-1,0]];
         }
-        return result;
+        
+        var current_time_formatted = (current_time.hour.format("%02d") + current_time.min.format("%02d")).toNumber();
+        var isHoliday = (current_time.day_of_week == 1 || current_time.day_of_week == 7);
+        var timetableStr = isHoliday ? schedule["holiday_str"] : schedule["weekday_str"];
+        
+        return TrainScheduleParser.findNextTrains(timetableStr, current_time_formatted);
     }
 
     function drawDepartureTime(dc as Dc, time as Lang.Array, x as Lang.Number, y as Lang.Number) as Void {
+        var displayTime;
+        if (time[0] == -1) {
+            displayTime = "----";
+        } else {
+            displayTime = time[0];
+        }
         var trainType = time[1] as Lang.Number;
         if(trainType == 0){
             dc.setColor(0x000000, Graphics.COLOR_WHITE);
@@ -100,9 +86,17 @@ class TrainScheduleFinderView extends WatchUi.View {
         } else if (trainType == 2) {
             dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
         } else {
-            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+            if(time[1] == 0){
+                dc.setColor(0x000000, Graphics.COLOR_WHITE);
+            } else if (time[1] == 1) {
+                dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
+            } else if (time[1] == 2) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+            } else {
+                dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+            }
         }
-        dc.drawText(x, y, Graphics.FONT_NUMBER_HOT, time[0].toString(), Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, displayTime, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     function getTimeStr(current_time){
@@ -145,7 +139,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         drawDepartureTime(dc, nextTrain, 120, 30);
         drawDepartureTime(dc, followingTrain, 120, 100);
         
-        dc.setColor(0x000000, Graphics.COLOR_WHITE);
+        dc.setColor(0x000000, Graphics.COLOR_TRANSPARENT);
         dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
