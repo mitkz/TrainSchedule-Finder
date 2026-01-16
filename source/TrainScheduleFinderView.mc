@@ -10,6 +10,8 @@ class TrainScheduleFinderView extends WatchUi.View {
     // false = outbound (going), true = return (coming back)
     var isReturnTrip = false;
     var _currentScheduleIndex = 0;
+    var _screenWidth = 240;
+    var _screenHeight = 240;
 
     function initialize() {
         View.initialize();
@@ -80,20 +82,20 @@ class TrainScheduleFinderView extends WatchUi.View {
         }
         var trainType = time[1] as Lang.Number;
         if(trainType == 0){
-            dc.setColor(0x000000, Graphics.COLOR_WHITE);
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         } else if (trainType == 1) {
-            dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
+            dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
         } else if (trainType == 2) {
-            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+            dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
         } else {
             if(time[1] == 0){
-                dc.setColor(0x000000, Graphics.COLOR_WHITE);
+                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
             } else if (time[1] == 1) {
-                dc.setColor(Graphics.COLOR_DK_GREEN, Graphics.COLOR_WHITE);
+                dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
             } else if (time[1] == 2) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_WHITE);
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
             } else {
-                dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_WHITE);
+                dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_BLACK);
             }
         }
         dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, displayTime, Graphics.TEXT_JUSTIFY_CENTER);
@@ -111,7 +113,8 @@ class TrainScheduleFinderView extends WatchUi.View {
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
-
+        _screenWidth = dc.getWidth();
+        _screenHeight = dc.getHeight();
     }
 
     // Called when this View is brought to the foreground. Restore
@@ -122,25 +125,41 @@ class TrainScheduleFinderView extends WatchUi.View {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        // Draw the background
-        dc.setColor (Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
-        dc.fillRectangle(0, 0, 240,240);
+        // Get screen dimensions
+        var width = _screenWidth;
+        var height = _screenHeight;
+        var centerX = width / 2;
+        var centerY = height / 2;
+        
+        // Draw the background - use black for AMOLED power efficiency
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        dc.fillRectangle(0, 0, width, height);
 
-        dc.setColor(0x000000, Graphics.COLOR_WHITE);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         var current_time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         
         // Draw the schedule title at the top
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-        dc.drawText(120, 173, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
+        // Position: ~72% down from top (proportional to original 173/240)
+        var titleY = (height * 72) / 100;
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+        dc.drawText(centerX, titleY, Graphics.FONT_XTINY, getCurrentTitle(), Graphics.TEXT_JUSTIFY_CENTER);
         
         var departure_time = getDepartureTime(current_time) as Lang.Array;
         var nextTrain = departure_time[0] as Lang.Array;
         var followingTrain = departure_time[1] as Lang.Array;
-        drawDepartureTime(dc, nextTrain, 120, 30);
-        drawDepartureTime(dc, followingTrain, 120, 100);
         
-        dc.setColor(0x000000, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(120, 190, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
+        // Position next train: ~12.5% from top (proportional to original 30/240)
+        var nextTrainY = (height * 125) / 1000;
+        drawDepartureTime(dc, nextTrain, centerX, nextTrainY);
+        
+        // Position following train: ~42% from top (proportional to original 100/240)
+        var followingTrainY = (height * 42) / 100;
+        drawDepartureTime(dc, followingTrain, centerX, followingTrainY);
+        
+        // Position current time: ~79% from top (proportional to original 190/240)
+        var timeY = (height * 79) / 100;
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(centerX, timeY, Graphics.FONT_SYSTEM_LARGE, getTimeStr(current_time), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     // Called when this View is removed from the screen. Save the
