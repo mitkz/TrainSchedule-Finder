@@ -88,15 +88,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         } else if (trainType == 2) {
             dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
         } else {
-            if(time[1] == 0){
-                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
-            } else if (time[1] == 1) {
-                dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_BLACK);
-            } else if (time[1] == 2) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_BLACK);
-            } else {
-                dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_BLACK);
-            }
+            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_BLACK);
         }
         dc.drawText(x, y,  Graphics.FONT_NUMBER_HOT, displayTime, Graphics.TEXT_JUSTIFY_CENTER);
     }
@@ -149,7 +141,7 @@ class TrainScheduleFinderView extends WatchUi.View {
         var followingTrain = departure_time[1] as Lang.Array;
         
         // Position next train: ~12.5% from top (proportional to original 30/240)
-        var nextTrainY = (height * 125) / 1000;
+        var nextTrainY = (height * 125) / 1000;  // 12.5% = 125/1000
         drawDepartureTime(dc, nextTrain, centerX, nextTrainY);
         
         // Position following train: ~42% from top (proportional to original 100/240)
