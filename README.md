@@ -3,6 +3,12 @@ A GARMIN watch widget to know the departure times of the nearest train station.
 
 This program does not get data from the internet, it uses offline data defined as an array in `source/TrainScheduleData.mc`.
 
+## Supported Devices
+- Garmin Vivoactive 3 (240x240 display)
+- Garmin Vivoactive 5 (390x390 AMOLED display)
+
+The widget automatically adapts to the screen size of your device and uses a black background for AMOLED displays to improve battery efficiency and reduce burn-in.
+
 ## Setup
 
 1. Copy `source/TrainScheduleData.mc.example` to `source/TrainScheduleData.mc`
@@ -18,7 +24,7 @@ The data structure uses an array of schedule objects. Each schedule contains:
 
 Time entries use the string format: `"hhmm:type,hhmm:type,..."`
 - `hhmm`: departure time in 24-hour format (e.g., 514 = 05:14, 1200 = 12:00)
-- `type`: 0 = local (black), 1 = express (green), 2 = special (red)
+- `type`: 0 = local (white), 1 = express (green), 2 = special (red)
 - Entries are separated by commas
 
 Example:
