@@ -121,7 +121,6 @@ class TrainScheduleFinderView extends WatchUi.View {
         var width = _screenWidth;
         var height = _screenHeight;
         var centerX = width / 2;
-        var centerY = height / 2;
         
         // Draw the background - use black for AMOLED power efficiency
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
